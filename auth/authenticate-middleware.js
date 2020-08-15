@@ -3,6 +3,14 @@
   before granting access to the next middleware/route handler
 */
 
-module.exports = (req, res, next) => {
-  res.status(401).json({ you: 'shall not pass!' });
+function makeCheckRoleMiddleware(role) {
+  return function (req, res, next) {
+    if (req.decodedJwt.role && req.decodedJwt.role === role) {
+      next();
+    } else {
+      res.status(403).json({you: 'are the wrong role'});
+    };
+  };
 };
+
+module.exports = makeCheckRoleMiddleware;
