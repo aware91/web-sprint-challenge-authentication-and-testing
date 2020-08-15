@@ -1,4 +1,4 @@
-const db = require("../database/connection.js");
+const db = require("../database/dbConfig.js");
 
 module.exports = {
   add,
@@ -8,16 +8,16 @@ module.exports = {
 };
 
 function find() {
-  return db("jokes").select("id", "username").orderBy("id");
+  return db("users").select("id", "username").orderBy("id");
 }
 
 function findBy(filter) {
-  return db("jokes").where(filter).orderBy("id");
+  return db("users").where(filter).orderBy("id");
 }
 
 async function add(user) {
   try {
-    const [id] = await db("jokes").insert(user, "id");
+    const [id] = await db("users").insert(user, "id");
 
     return findById(id);
   } catch (error) {
@@ -26,5 +26,5 @@ async function add(user) {
 }
 
 function findById(id) {
-  return db("jokes").where({ id }).first();
+  return db("users").where({ id }).first();
 }

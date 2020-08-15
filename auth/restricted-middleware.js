@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-const secrets = require('../config/secrets.js');
-const { listenerCount } = require('../database/dbConfig.js');
+const secrets = require('../config/secret');
 
 module.exports = (req, res, next) => {
   const [authType, token] = req.headers.authorization.split(" ");

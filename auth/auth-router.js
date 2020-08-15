@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const secret = require('../config/secret.js');
 
-const Jokes = require('../jokes/jokes-model.js');
+const users = require('../jokes/jokes-model.js');
 const { isValid } = require('../jokes/jokes-service.js');
 
 
@@ -14,11 +14,12 @@ router.post('/register', (req, res) => {
     const rounds = process.env.BCRYPT_ROUNDS || 8;
     const hash = bcryptjs.hashSync(credentials.password, rounds);
     credentials.password = hash;
-    Jokes.add(credentials)
-      .then(joke => {
-        res.status(201).json({ data: joke });
+    users.add(credentials)
+      .then(user => {
+        res.status(201).json({ data: user });
       })
       .catch(error => {
+        console.log(error.message)
         res.status(500).json({ message: error.message });
       });
   } else {
@@ -33,16 +34,17 @@ router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   if (isValid(req.body)) {
-    Jokes.findBy({ username: username })
-      .then(([joke]) => {
-        if (joke && bcryptjs.compareSync(password, joke.password)) {
-          const token = generateToke(joke)
+    users.findBy({ username: username })
+      .then(([user]) => {
+        if (user && bcryptjs.compareSync(password, user.password)) {
+          const token = generateToke(user)
           res.status(200).json({ message: "Welcome to our Dad Jokes", token });
         } else {
           res.status(401).json({ message: "Invalid credentials" });
         }
       })
       .catch(error => {
+        console.log(error.message)
         res.status(500).json({ message: error.message });
       });
   } else {
@@ -52,12 +54,12 @@ router.post('/login', (req, res) => {
   }
 });
 
-function generateToke(joke) {
+function generateToke(user) {
 
   const payload = {
-    subject: joke.id,
-    username: joke.username,
-    role: joke.role
+    subject: user.id,
+    username: user.username,
+    role: user.role
   };
   const options ={
     expiresIn: '1h'
