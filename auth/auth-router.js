@@ -1,9 +1,6 @@
 const router = require('express').Router();
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const secret = require('../config/secret.js');
-const checkRole = require('../auth/authenticate-middleware.js');
-const restricted = require('../auth/restricted-middleware.js');
 
 const users = require('../jokes/jokes-model.js');
 const { isValid } = require('../jokes/jokes-service.js');
